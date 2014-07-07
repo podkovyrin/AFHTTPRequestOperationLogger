@@ -171,7 +171,6 @@ static void * AFHTTPRequestOperationStartDate = &AFHTTPRequestOperationStartDate
     } else {
         switch (self.level) {
             case AFLoggerLevelDebug:
-            case AFLoggerLevelDebugCurl:
                 NSLog(@"%ld '%@' [%.04f s]: %@ %@", (long)[operation.response statusCode], [[operation.response URL] absoluteString], elapsedTime, [operation.response allHeaderFields], operation.responseString);
                 break;
             case AFLoggerLevelInfo:
