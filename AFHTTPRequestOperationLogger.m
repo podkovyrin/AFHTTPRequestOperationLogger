@@ -90,7 +90,7 @@ static void * AFHTTPRequestOperationStartDate = &AFHTTPRequestOperationStartDate
     switch (self.level) {
         case AFLoggerLevelDebugCURL:
         case AFLoggerLevelCURL:
-            NSLog(@"\n--------\n%@\n--------", [TTTURLRequestFormatter cURLCommandFromURLRequest:request]);
+            NSLog(@"\n--------\n%@\n--------", [TTTURLRequestFormatter cURLCommandFromURLRequest:operation.request]);
             break;
         case AFLoggerLevelDebug:
             NSLog(@"%@ '%@': %@ %@", [operation.request HTTPMethod], [[operation.request URL] absoluteString], [operation.request allHTTPHeaderFields], body);
