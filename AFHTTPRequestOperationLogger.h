@@ -23,21 +23,22 @@
 #import <Foundation/Foundation.h>
 
 typedef NS_ENUM(NSUInteger, AFHTTPRequestLoggerLevel) {
-  AFLoggerLevelOff,
-  AFLoggerLevelDebug,
-  AFLoggerLevelDebugCurl,
-  AFLoggerLevelInfo,
-  AFLoggerLevelWarn,
-  AFLoggerLevelError,
-  AFLoggerLevelFatal = AFLoggerLevelOff,
+    AFLoggerLevelOff,
+    AFLoggerLevelDebug,
+    AFLoggerLevelDebugCURL,
+    AFLoggerLevelInfo,
+    AFLoggerLevelCURL,
+    AFLoggerLevelWarn,
+    AFLoggerLevelError,
+    AFLoggerLevelFatal = AFLoggerLevelOff,
 };
 
 /**
  `AFHTTPRequestOperationLogger` logs requests and responses made by AFNetworking, with an adjustable level of detail.
  
  Applications should enable the shared instance of `AFHTTPRequestOperationLogger` in `AppDelegate -application:didFinishLaunchingWithOptions:`:
-
-        [[AFHTTPRequestOperationLogger sharedLogger] startLogging];
+ 
+ [[AFHTTPRequestOperationLogger sharedLogger] startLogging];
  
  `AFHTTPRequestOperationLogger` listens for `AFNetworkingOperationDidStartNotification` and `AFNetworkingOperationDidFinishNotification` notifications, which are posted by AFNetworking as request operations are started and finish. For further customization of logging output, users are encouraged to implement desired functionality by listening for these notifications.
  */
@@ -76,37 +77,41 @@ typedef NS_ENUM(NSUInteger, AFHTTPRequestLoggerLevel) {
 
 /**
  ## Logging Levels
-
+ 
  The following constants specify the available logging levels for `AFHTTPRequestOperationLogger`:
-
+ 
  enum {
  AFLoggerLevelOff,
  AFLoggerLevelDebug,
- AFLoggerLevelDebugCurl,
+ AFLoggerLevelDebugCURL,
  AFLoggerLevelInfo,
+ AFLoggerLevelCURL,
  AFLoggerLevelWarn,
  AFLoggerLevelError,
  AFLoggerLevelFatal = AFLoggerLevelOff,
  }
-
+ 
  `AFLoggerLevelOff`
  Do not log requests or responses.
-
+ 
  `AFLoggerLevelDebug`
  Logs HTTP method, URL, header fields, & request body for requests, and status code, URL, header fields, response string, & elapsed time for responses.
  
- `AFLoggerLevelDebugCurl`
- Logs requests to curl command
+ `AFLoggerLevelDebugCURL`
+ Logs requests to cURL command and status code, URL, header fields, response string, & elapsed time for responses.
  
  `AFLoggerLevelInfo`
  Logs HTTP method & URL for requests, and status code, URL, & elapsed time for responses.
-
+ 
+ `AFLoggerLevelCURL`
+ Logs requests to cURL command
+ 
  `AFLoggerLevelWarn`
  Logs HTTP method & URL for requests, and status code, URL, & elapsed time for responses, but only for failed requests.
  
  `AFLoggerLevelError`
  Equivalent to `AFLoggerLevelWarn`
-
+ 
  `AFLoggerLevelFatal`
  Equivalent to `AFLoggerLevelOff`
  */

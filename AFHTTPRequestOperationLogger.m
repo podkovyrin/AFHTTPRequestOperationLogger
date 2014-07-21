@@ -22,51 +22,9 @@
 
 #import "AFHTTPRequestOperationLogger.h"
 #import "AFHTTPRequestOperation.h"
+#import <FormatterKit/TTTURLRequestFormatter.h>
 
 #import <objc/runtime.h>
-
-@interface NSURLRequest (AFCURL)
-
-- (NSString *)af_curlCommand;
-
-@end
-
-@implementation NSURLRequest (AFCURL)
-
-- (NSString *)af_curlCommand {
-    NSMutableString *result = [[NSMutableString alloc] init];
-    
-    [result appendFormat:@"curl -k -X %@ ", [self HTTPMethod]];
-    
-    if ([self HTTPBody]) {
-        NSString *params = [[NSString alloc] initWithData:[self HTTPBody] encoding:NSUTF8StringEncoding];
-        [result appendFormat:@"-d \"%@\" ", params];
-    }
-    
-    for (NSString *key in [self allHTTPHeaderFields]) {
-        [result appendFormat:@"-H \"%@: %@\" ", key, [self valueForHTTPHeaderField:key]];
-    }
-    
-    if ([self HTTPShouldHandleCookies]) {
-        NSHTTPCookieStorage *storage = [NSHTTPCookieStorage sharedHTTPCookieStorage];
-        NSArray *cookies = [storage cookiesForURL:[self URL]];
-        
-        if (cookies.count > 0) {
-            NSMutableString *cookiesString = [[NSMutableString alloc] init];
-            for (NSHTTPCookie *cookie in cookies) {
-                [cookiesString appendFormat:@"%@=%@;", [cookie name], [cookie value]];
-            }
-            
-            [result appendFormat:@" -b \"%@\" ", cookiesString];
-        }
-    }
-    
-    [result appendString:[NSString stringWithFormat:@"\"%@\"", [[self URL] absoluteString]]];
-    
-    return [NSString stringWithString:result];
-}
-
-@end
 
 @implementation AFHTTPRequestOperationLogger
 
@@ -130,8 +88,9 @@ static void * AFHTTPRequestOperationStartDate = &AFHTTPRequestOperationStartDate
     }
     
     switch (self.level) {
-        case AFLoggerLevelDebugCurl:
-            NSLog(@"\n--------\n%@\n--------", [operation.request af_curlCommand]);
+        case AFLoggerLevelDebugCURL:
+        case AFLoggerLevelCURL:
+            NSLog(@"\n--------\n%@\n--------", [TTTURLRequestFormatter cURLCommandFromURLRequest:request]);
             break;
         case AFLoggerLevelDebug:
             NSLog(@"%@ '%@': %@ %@", [operation.request HTTPMethod], [[operation.request URL] absoluteString], [operation.request allHTTPHeaderFields], body);
@@ -160,7 +119,7 @@ static void * AFHTTPRequestOperationStartDate = &AFHTTPRequestOperationStartDate
     if (operation.error) {
         switch (self.level) {
             case AFLoggerLevelDebug:
-            case AFLoggerLevelDebugCurl:
+            case AFLoggerLevelDebugCURL:
             case AFLoggerLevelInfo:
             case AFLoggerLevelWarn:
             case AFLoggerLevelError:
@@ -171,7 +130,7 @@ static void * AFHTTPRequestOperationStartDate = &AFHTTPRequestOperationStartDate
     } else {
         switch (self.level) {
             case AFLoggerLevelDebug:
-            case AFLoggerLevelDebugCurl:
+            case AFLoggerLevelDebugCURL:
                 NSLog(@"%ld '%@' [%.04f s]: %@ %@", (long)[operation.response statusCode], [[operation.response URL] absoluteString], elapsedTime, [operation.response allHeaderFields], operation.responseString);
                 break;
             case AFLoggerLevelInfo:
